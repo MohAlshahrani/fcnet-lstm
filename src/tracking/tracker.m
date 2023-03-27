@@ -182,12 +182,13 @@ function [bboxes, speed] = tracker(varargin, gt, prev_boxes)
     num = 1;
     sizer = size(single(p.imgFiles{p.startFrame}));
     %disp(p.totalStride);
-    vid = VideoWriter('myFile.avi');
-    vid.FrameRate = 3;
-    open(vid);
+%     vid = VideoWriter('myFile.avi');
+%     vid.FrameRate = 3;
+%     open(vid);
     for i = p.startFrame:nImgs
         fprintf('Frame%d\n', i);
         singlePosition = [p.targetPosition([2,1]) - p.targetSize([2,1])/2, p.targetSize([2,1])];
+            
         if i > p.startFrame        
             im = single(p.imgFiles{i});
             if ~isempty(p.gpus)
@@ -288,9 +289,9 @@ function [bboxes, speed] = tracker(varargin, gt, prev_boxes)
             % update target bbox
             %scaledTarget = [p.targetSize(1) .* scales; p.targetSize(2) .* scales];
             %p.targetSize = (1-p.scaleLR)*p.targetSize + p.scaleLR*[scaledTarget(1,newScale) scaledTarget(2,newScale)];
-        else
+%         else
             % at the first frame output position and size passed as input (ground truth)
-        end
+%         end
 
         rectPosition = [p.targetPosition([2,1]) - p.targetSize([2,1])/2, p.targetSize([2,1])];
         %% output bbox in the original frame coordinates
@@ -300,30 +301,30 @@ function [bboxes, speed] = tracker(varargin, gt, prev_boxes)
         oTargetSize = p.targetSize;
         bboxes(i, :) = [oTargetPosition([2,1]) - oTargetSize([2,1])/2, oTargetSize([2,1])];
 %         grou = gt(i, :);
-        statis = gt(1, :);
+%         statis = gt(1, :);
 %         singlePosition = prev_boxes(i, :);
-        if p.visualization
-            if isempty(videoPlayer)
+%         if p.visualization
+%             if isempty(videoPlayer)
                 %if i >=7 && i <= 10
-                disp(rectPosition);
+%                 disp(rectPosition);
 %                 disp(singlePosition);
-                h = figure(1);
+%                 h = figure(1);
                 %set(h, 'units','normalized','outerposition',[0 0 1 1]);
-                haxes = axes(h); 
-                imshow(im/255, 'Parent', haxes);
-                xlabel(haxes, 'Lateral Direction');
-                ylabel(haxes, 'Axial Direction');
+%                 haxes = axes(h); 
+%                 imshow(im/255, 'Parent', haxes);
+%                 xlabel(haxes, 'Lateral Direction');
+%                 ylabel(haxes, 'Axial Direction');
 %         p        text(statis(1) , statis(2) + 105, 'GT', 'Color', 'g', 'FontSize', 12);
 %                 rectangle('Position', grou, 'LineWidth', 1, 'EdgeColor', 'g');
 %                 text(statis(1) , statis(2) + 135, 'ST', 'Color', 'r', 'FontSize', 12);
 %                 rectangle('Position', singlePosition, 'LineWidth', 1, 'EdgeColor', 'r');
-                text(statis(1) , statis(2) + 165, 'CFNet-5-Conv', 'Color', 'b', 'FontSize', 12);
-                rectangle('Position', rectPosition, 'LineWidth', 1, 'EdgeColor', 'b');
-                if i >= 2
-                    frame_vid = getframe(gcf);
-                    disp(size(frame_vid));
-                    writeVideo(vid, frame_vid);
-                end
+%                 text(statis(1) , statis(2) + 165, 'CFNet-5-Conv', 'Color', 'b', 'FontSize', 12);
+%                 rectangle('Position', rectPosition, 'LineWidth', 1, 'EdgeColor', 'b');
+%                 if i >= 2
+%                     frame_vid = getframe(gcf);
+%                     disp(size(frame_vid));
+%                     writeVideo(vid, frame_vid);
+%                 end
 %                 if i == 1
 %                 pause (4);
 %                 end
@@ -373,15 +374,15 @@ function [bboxes, speed] = tracker(varargin, gt, prev_boxes)
 
                 %end
                 %disp(grou);
-                drawnow                
-                fprintf('Frame %d\n', p.startFrame+i);
-            else
-                im = gather(im)/255;
-                im = insertShape(im, 'Rectangle', rectPosition, 'LineWidth', 4, 'Color', 'yellow');
+%                 drawnow                
+%                 fprintf('Frame %d\n', p.startFrame+i);
+%             else
+%                 im = gather(im)/255;
+%                 im = insertShape(im, 'Rectangle', rectPosition, 'LineWidth', 4, 'Color', 'yellow');
                 % Display the annotated video frame using the video player object.
-                step(videoPlayer, im);
-            end
-        end
+%                 step(videoPlayer, im);
+%             end
+    end
 
         %stop the tracker on track loss (if a 'track_lost' function is specified)
         if ~isempty(p.track_lost) && p.track_lost(i, bboxes(i,:))
@@ -396,5 +397,5 @@ function [bboxes, speed] = tracker(varargin, gt, prev_boxes)
     else
         speed = n_frames_ontrack/overall_time;
     end
-    close(vid);
+%     close(vid);
 end
